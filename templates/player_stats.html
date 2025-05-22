@@ -1,0 +1,986 @@
+{% extends "base.html" %}
+
+{% block title %}{{ player.name }} - MLB Statistics{% endblock %}
+{% block styles %}
+.chart-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.chart-actions .btn {
+    margin-left: 5px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.chart-actions .btn:hover {
+    opacity: 1;
+}
+{% endblock %}
+{% block content %}
+{% if error %}
+<div class="alert alert-danger rounded-3 shadow-sm border-0">
+    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+</div>
+<a href="/" class="btn btn-outline-primary rounded-pill px-4">
+    <i class="fas fa-arrow-left me-2"></i>Back to Home
+</a>
+{% else %}
+
+<!-- Enhanced Hero Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="/" class="btn btn-outline-light btn-sm rounded-pill mb-3 shadow-sm">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </a>
+        
+        <!-- Modern Player Card -->
+        <div class="card bg-gradient border-0 shadow-lg overflow-hidden" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <!-- Player Image & Basic Info -->
+                    <div class="col-lg-3 col-md-4 text-center text-md-start">
+                        <div class="position-relative d-inline-block mb-3">
+                            {% if player.image %}
+                            <img src="{{ player.image }}" alt="{{ player.name }}"
+                                 class="img-fluid rounded-4 shadow-lg border border-light border-opacity-25"
+                                 style="max-height: 160px; max-width: 140px;">
+                            {% else %}
+                            <div class="player-placeholder bg-gradient d-flex align-items-center justify-content-center rounded-4 shadow-lg"
+                                 style="width:140px; height:160px; background: linear-gradient(45deg, #4a5568, #2d3748);">
+                                <i class="fas fa-user-circle fa-4x text-light opacity-75"></i>
+                            </div>
+                            {% endif %}
+                            <div class="position-absolute top-0 end-0 translate-middle">
+                                <span class="badge bg-primary rounded-pill px-3 py-2 shadow">{{ player.position }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Team Logos with Enhanced Design -->
+                        {% if player.team_images %}
+                        <div class="mb-3">
+                            <small class=" fw-medium d-block mb-2">
+                                <i class="fas fa-shield-alt me-1"></i>Teams
+                            </small>
+                            <div class="d-flex justify-content-center justify-content-md-start gap-2">
+                                {% for team_img in player.team_images %}
+                                <div class="team-logo-wrapper">
+                                    <img src="{{ team_img }}" alt="Team Logo" 
+                                         class="rounded-3 bg-white p-2 shadow-sm border border-light border-opacity-25"
+                                         style="width: 32px; height: 32px;">
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Player Details -->
+                    <div class="col-lg-6 col-md-8">
+                        <h1 class="display-5 fw-bold text-white mb-2">{{ player.name }}</h1>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-6 col-lg-4">
+                                <div class="info-pill">
+                                    <small class="">Team</small>
+                                    <div class="fw-semibold text-white">{{ player.team }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-lg-4">
+                                <div class="info-pill">
+                                    <small class="">Bats/Throws</small>
+                                    <div class="fw-semibold text-white">{{ player.bats }}/{{ player.throws }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-lg-4">
+                                <div class="info-pill">
+                                    <small class="">Games</small>
+                                    <div class="fw-semibold text-white">{{ player.games_played }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Toggle Buttons -->
+                        <div class="btn-group shadow-sm" role="group">
+                            <input type="radio" class="btn-check" name="stat-toggle" id="per-game-radio" autocomplete="off" checked>
+                            <label class="btn btn-outline-light rounded-start-pill px-4" for="per-game-radio" onclick="toggleStats('per-game')">
+                                <i class="fas fa-calculator me-2"></i>Per Game
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="stat-toggle" id="season-totals-radio" autocomplete="off">
+                            <label class="btn btn-outline-light rounded-end-pill px-4" for="season-totals-radio" onclick="toggleStats('season-totals')">
+                                <i class="fas fa-trophy me-2"></i>Season Totals
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Rate Stats Highlight -->
+                    <div class="col-lg-3 d-none d-lg-block">
+                        {% if player.rate_stats %}
+                        <div class="text-center">
+                            <h6 class=" mb-3">
+                                <i class="fas fa-star me-2"></i>Rate Stats
+                            </h6>
+                            <div class="row g-2">
+                                {% for stat, data in player.rate_stats.items() %}
+                                <div class="col-6">
+                                    <div class="stat-highlight bg-white bg-opacity-10 rounded-3 p-3 border border-light border-opacity-25">
+                                        <div class="small ">{{ stat }}</div>
+                                        <div class="h5 fw-bold text-white mb-1">{{ "%.3f"|format(data.value) }}</div>
+                                        {% if data.rank %}
+                                        <span class="badge rank-badge-{{ data.rank }} small px-2 py-1">
+                                            #{{ data.rank }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="row mt-4 g-3">
+            <!-- Per Game Stats -->
+            <div class="col-12" id="per-game">
+                <div class="card border-0 shadow-lg bg-white">
+                    <div class="card-header bg-success text-white py-3 border-0 rounded-top-3">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Per Game Statistics</h5>
+                                <small class="opacity-75">Average performance per game</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            {% for stat, data in player.per_game.items() %}
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="stat-card h-100 text-center p-3 rounded-3 border border-light-subtle position-relative overflow-hidden">
+                                    <div class="stat-bg-pattern"></div>
+                                    <div class="position-relative">
+                                        <div class="text-muted small fw-medium mb-1">{{ stat }}</div>
+                                        <div class="h4 fw-bold text-dark mb-2">{{ "%.2f"|format(data.value) }}</div>
+                                        {% if data.rank %}
+                                        <span class="badge rank-badge-{{ data.rank }} px-2 py-1">
+                                            #{{ data.rank }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Season Totals -->
+            {% if player.totals %}
+            <div class="col-12 d-none" id="season-totals">
+                <div class="card border-0 shadow-lg bg-white">
+                    <div class="card-header bg-warning text-dark py-3 border-0 rounded-top-3">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle bg-dark bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                <i class="fas fa-trophy text-dark"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Season Totals</h5>
+                                <small class="opacity-75">Cumulative season statistics</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            {% for stat, data in player.totals.items() %}
+                            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                <div class="stat-card h-100 text-center p-3 rounded-3 border border-light-subtle position-relative overflow-hidden">
+                                    <div class="stat-bg-pattern"></div>
+                                    <div class="position-relative">
+                                        <div class="text-muted small fw-medium mb-1">{{ stat }}</div>
+                                        <div class="h4 fw-bold text-dark mb-2">{{ data.value }}</div>
+                                        {% if data.rank %}
+                                        <span class="badge rank-badge-{{ data.rank }} px-2 py-1">
+                                            #{{ data.rank }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Tabs Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-gray-700 border-0 pt-4 pb-0">
+                <ul class="nav nav-pills nav-fill" id="main-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-pill me-2 px-4 py-3" id="rate-stats-tab" data-bs-toggle="tab" data-bs-target="#rate-stats" type="button" role="tab">
+                            <i class="fas fa-chart-line me-2"></i>Rate Statistics
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill me-2 px-4 py-3" id="counting-stats-tab" data-bs-toggle="tab" data-bs-target="#counting-stats" type="button" role="tab">
+                            <i class="fas fa-bar-chart me-2"></i>Counting Statistics
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill px-4 py-3" id="game-log-tab" data-bs-toggle="tab" data-bs-target="#game-log" type="button" role="tab">
+                            <i class="fas fa-table me-2"></i>Game Log
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card-body p-4">
+                <div class="tab-content" id="main-tabs-content">
+                    <!-- Rate Statistics Tab -->
+                    <div class="tab-pane fade show active" id="rate-stats" role="tabpanel">
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-sliders-h text-primary me-2"></i>
+                                    <label for="movingAverageWindowRate" class="form-label mb-0 fw-medium">Moving Average Window:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="number" class="form-control rounded-pill" id="movingAverageWindowRate" value="10" min="1" max="100">
+                                    <span class=" bg-transparent border-0">games</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <ul class="nav nav-pills mb-4" id="rate-stats-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active rounded-pill me-2" id="avg-tab" data-bs-toggle="tab" data-bs-target="#avg-content" type="button">
+                                    Batting Average
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link rounded-pill me-2" id="ops-tab" data-bs-toggle="tab" data-bs-target="#ops-content" type="button">
+                                    OPS
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link rounded-pill" id="obp-slg-tab" data-bs-toggle="tab" data-bs-target="#obp-slg-content" type="button">
+                                    OBP & SLG
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content" id="rate-stats-content">
+                            <div class="tab-pane fade show active" id="avg-content" role="tabpanel">
+                         <div class="chart-wrapper bg-light rounded-3 p-3" style="position: relative;">
+                                <div class="chart-actions">
+                                    <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="downloadChart('avg-chart', 'batting-average')">
+                                        <i class="fas fa-download me-1"></i>PNG
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="copyChartToClipboard('avg-chart')">
+                                        <i class="fas fa-copy me-1"></i>Copy
+                                    </button>
+                                </div>
+                                <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                                    <canvas id="avg-chart"></canvas>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="tab-pane fade" id="ops-content" role="tabpanel">
+                            <div class="chart-wrapper bg-light rounded-3 p-3" style="position: relative;">    
+                                <div class="chart-actions">
+                                    <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="downloadChart('ops-chart', 'ops-stats')">
+                                        <i class="fas fa-download me-1"></i>PNG
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="copyChartToClipboard('ops-chart')">
+                                        <i class="fas fa-copy me-1"></i>Copy
+                                    </button>
+                                </div>
+                                <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                                    <canvas id="ops-chart"></canvas>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="tab-pane fade" id="obp-slg-content" role="tabpanel">
+                                <div class="chart-wrapper bg-light rounded-3 p-3" style="position: relative;">
+                                    <div class="chart-actions">
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="downloadChart('obp-slg-chart', 'obp-slg-stats')">
+                                            <i class="fas fa-download me-1"></i>PNG
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="copyChartToClipboard('obp-slg-chart')">
+                                            <i class="fas fa-copy me-1"></i>Copy
+                                        </button>
+                                    </div>
+                                    <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                                        <canvas id="obp-slg-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Counting Statistics Tab -->
+                    <div class="tab-pane fade" id="counting-stats" role="tabpanel">
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-sliders-h text-primary me-2"></i>
+                                    <label for="movingAverageWindowCounting" class="form-label mb-0 fw-medium">Moving Average Window:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="number" class="form-control rounded-pill" id="movingAverageWindowCounting" value="10" min="1" max="100">
+                                        <span class=" bg-transparent border-0">games</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <ul class="nav nav-pills mb-4" id="counting-stats-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active rounded-pill me-2" id="hits-tab" data-bs-toggle="tab" data-bs-target="#hits-content" type="button">
+                                    Hits & At Bats
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link rounded-pill me-2" id="power-tab" data-bs-toggle="tab" data-bs-target="#power-content" type="button">
+                                    Power Stats
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link rounded-pill" id="plate-discipline-tab" data-bs-toggle="tab" data-bs-target="#plate-discipline-content" type="button">
+                                    Plate Discipline
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content" id="counting-stats-content">
+                            <div class="tab-pane fade show active" id="hits-content" role="tabpanel">
+                 <div class="chart-wrapper bg-light rounded-3 p-3" style="position: relative;">
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="downloadChart('hits-chart', 'hits-at-bats')">
+                            <i class="fas fa-download me-1"></i>PNG
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="copyChartToClipboard('hits-chart')">
+                            <i class="fas fa-copy me-1"></i>Copy
+                        </button>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                        <canvas id="hits-chart"></canvas>
+                    </div>
+                </div>
+                            </div>
+                            <div class="tab-pane fade" id="power-content" role="tabpanel">
+                        <div class="chart-wrapper bg-light rounded-3 p-3" style="position: relative;">
+                            <div class="chart-actions">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="downloadChart('power-chart', 'power-stats')">
+                                    <i class="fas fa-download me-1"></i>PNG
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="copyChartToClipboard('power-chart')">
+                                    <i class="fas fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                            <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                                <canvas id="power-chart"></canvas>
+                            </div>
+                        </div>
+                            </div>
+                            <div class="tab-pane fade" id="plate-discipline-content" role="tabpanel">
+                                <div class="chart-wrapper bg-light rounded-3 p-3" style="position: relative;">
+                                    <div class="chart-actions">
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="downloadChart('plate-discipline-chart', 'plate-discipline')">
+                                            <i class="fas fa-download me-1"></i>PNG
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="copyChartToClipboard('plate-discipline-chart')">
+                                            <i class="fas fa-copy me-1"></i>Copy
+                                        </button>
+                                    </div>
+                                    <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                                        <canvas id="plate-discipline-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Enhanced Game Log Tab -->
+                    <div class="tab-pane fade" id="game-log" role="tabpanel">
+                        <div class="table-responsive rounded-3 overflow-hidden shadow-sm">
+                            <table class="table table-hover mb-0 modern-table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="border-0"><i class="fas fa-calendar me-2"></i>Date</th>
+                                        <th class="border-0"><i class="fas fa-shield-alt me-2"></i>Opponent</th>
+                                        <th class="border-0">PA</th>
+                                        <th class="border-0">AB</th>
+                                        <th class="border-0">H</th>
+                                        <th class="border-0">HR</th>
+                                        <th class="border-0">BB</th>
+                                        <th class="border-0">K</th>
+                                        <th class="border-0">TB</th>
+                                        <th class="border-0">RBI</th>
+                                        <th class="border-0">AVG</th>
+                                        <th class="border-0">OBP</th>
+                                        <th class="border-0">SLG</th>
+                                        <th class="border-0">OPS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stats-table-body">
+                                    <tr>
+                                        <td colspan="14" class="text-center p-5">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <div class="spinner-border text-primary mb-3" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <span class="text-muted">Loading game data...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if not error %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const playerId = {{ player.id }};
+        let rawData = null; 
+        
+        let avgChartInstance, opsChartInstance, obpSlgChartInstance;
+        let hitsChartInstance, powerChartInstance, plateDisciplineChartInstance;
+
+        const movingAverageWindowRateInput = document.getElementById('movingAverageWindowRate');
+        const movingAverageWindowCountingInput = document.getElementById('movingAverageWindowCounting');
+        
+        // Chart.js Global Defaults for Dark Theme
+        Chart.defaults.color = '#bdc3c7'; // Default text color for charts (axes, labels)
+        Chart.defaults.borderColor = '#4a5568'; // Default border color for chart elements like grid lines
+
+        function calculateMovingAverage(dataArray, windowSize) {
+            if (!dataArray || !Array.isArray(dataArray)) return [];
+            windowSize = parseInt(windowSize);
+            if (isNaN(windowSize) || windowSize <= 0) windowSize = 1;
+
+            const result = [];
+            for (let i = 0; i < dataArray.length; i++) {
+                const start = Math.max(0, i - windowSize + 1);
+                const windowSlice = dataArray.slice(start, i + 1);
+                const validValues = windowSlice.filter(val => typeof val === 'number' && !isNaN(val));
+                
+                if (validValues.length > 0) {
+                    const sum = validValues.reduce((acc, val) => acc + val, 0);
+                    result.push(sum / validValues.length);
+                } else {
+                    result.push(null); 
+                }
+            }
+            return result;
+        }
+
+        const lightTextColor = '#e0e0e0';
+        const mutedTextColor = '#bdc3c7';
+        const gridColor = '#34495e'; // Darker grid lines for subtle appearance
+        const accentColor1 = '#3498db'; // Bright Blue
+        const accentColor2 = '#e67e22'; // Orange
+        const accentColor3 = '#2ecc71'; // Green
+        const accentColor4 = '#f1c40f'; // Yellow
+        const accentColor5 = '#9b59b6'; // Purple
+        const accentColor6 = '#e74c3c'; // Red
+
+        function commonLineChartOptions(baseTitle, windowSize, numDates) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: `${baseTitle} (${windowSize}-game MA)`, color: lightTextColor, font: { size: 16 } },
+                    legend: { labels: { color: mutedTextColor } },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: lightTextColor,
+                        bodyColor: mutedTextColor,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label = label.replace(` (${windowSize}-game MA)`, '');
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) label += context.parsed.y.toFixed(3);
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: false, 
+                        ticks: { color: mutedTextColor, callback: function(value) { return value.toFixed(3); }},
+                        grid: { color: gridColor }
+                    },
+                    x: {
+                        ticks: { color: mutedTextColor },
+                        grid: { color: gridColor }
+                    }
+                },
+                elements: {
+                        line: {
+                            tension: 0.25,
+                            borderWidth: 2,
+                            fill: 'start',
+                            backgroundColor: (context) => {
+                            const ctx = context.chart.ctx;
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                            gradient.addColorStop(0, 'rgba(52, 152, 219, 0.4)');
+                            gradient.addColorStop(1, 'rgba(52, 152, 219, 0)');
+                            return gradient;
+                            }
+                        }
+                        }
+
+            };
+        }
+
+        function commonBarChartOptions(baseTitle, windowSize) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: `${baseTitle} (${windowSize}-game MA)`, color: lightTextColor, font: {size: 16} },
+                    legend: { labels: { color: mutedTextColor } },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: lightTextColor,
+                        bodyColor: mutedTextColor,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label = label.replace(` (${windowSize}-game MA)`, '');
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) label += context.parsed.y.toFixed(1);
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { color: mutedTextColor, callback: function(value) { return Number.isInteger(value) ? value : value.toFixed(1); }},
+                        grid: { color: gridColor }
+                    },
+                    x: {
+                    ticks: { color: mutedTextColor },
+                    grid: { color: gridColor },
+                    categoryPercentage: 0.6,
+                    barPercentage: 0.9
+
+                }
+
+                }
+            };
+        }
+
+    function createOrUpdateRateStatsCharts() {
+        if (!rawData || !rawData.rate_stats || !rawData.dates) {
+            document.getElementById('rate-stats-content').innerHTML = `<div class="alert alert-info">Rate statistics data not available.</div>`;
+            return;
+        }
+        const windowSize = parseInt(movingAverageWindowRateInput.value) || 10;
+        const numDates = rawData.dates.length;
+
+        const avgMA = calculateMovingAverage(rawData.rate_stats.AVG || [], windowSize);
+        const opsMA = calculateMovingAverage(rawData.rate_stats.OPS || [], windowSize);
+        const obpMA = calculateMovingAverage(rawData.rate_stats.OBP || [], windowSize);
+        const slgMA = calculateMovingAverage(rawData.rate_stats.SLG || [], windowSize);
+
+        // Create league average arrays (constant values across all dates)
+        const leagueAvgAVG = rawData.league_averages?.AVG ? new Array(numDates).fill(rawData.league_averages.AVG) : null;
+        const leagueAvgOPS = rawData.league_averages?.OPS ? new Array(numDates).fill(rawData.league_averages.OPS) : null;
+        const leagueAvgOBP = rawData.league_averages?.OBP ? new Array(numDates).fill(rawData.league_averages.OBP) : null;
+        const leagueAvgSLG = rawData.league_averages?.SLG ? new Array(numDates).fill(rawData.league_averages.SLG) : null;
+
+        if (avgChartInstance) avgChartInstance.destroy();
+        const avgDatasets = [
+            { 
+                label: `AVG (${windowSize}-game MA)`, 
+                data: avgMA, 
+                borderColor: accentColor1, 
+                borderWidth: 2,
+                fill: false
+            }
+        ];
+        if (leagueAvgAVG) {
+            avgDatasets.push({
+                label: 'League Average',
+                data: leagueAvgAVG,
+                borderColor: accentColor1, // Gray color for league average
+                borderWidth: 2,
+                borderDash: [5, 5], // Dashed line
+                fill: false,
+                pointRadius: 0, // No points on league average line
+                pointHoverRadius: 3
+            });
+        }
+        avgChartInstance = new Chart(document.getElementById('avg-chart'), {
+            type: 'line',
+            data: { labels: rawData.dates, datasets: avgDatasets },
+            options: commonLineChartOptions('Batting Average Over Time', windowSize, numDates)
+        });
+        
+        if (opsChartInstance) opsChartInstance.destroy();
+        const opsDatasets = [
+            { 
+                label: `OPS (${windowSize}-game MA)`, 
+                data: opsMA, 
+                borderColor: accentColor2, 
+                borderWidth: 2,
+                fill: false
+            }
+        ];
+        if (leagueAvgOPS) {
+            opsDatasets.push({
+                label: 'League Average',
+                data: leagueAvgOPS,
+                borderColor: accentColor2,
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                pointRadius: 0,
+                pointHoverRadius: 3
+            });
+        }
+        opsChartInstance = new Chart(document.getElementById('ops-chart'), {
+            type: 'line',
+            data: { labels: rawData.dates, datasets: opsDatasets },
+            options: commonLineChartOptions('OPS Over Time', windowSize, numDates)
+        });
+        
+        if (obpSlgChartInstance) obpSlgChartInstance.destroy();
+        const obpSlgDatasets = [
+            { 
+                label: `OBP (${windowSize}-game MA)`, 
+                data: obpMA, 
+                borderColor: accentColor3, 
+                borderWidth: 2,
+                fill: false
+            },
+            { 
+                label: `SLG (${windowSize}-game MA)`, 
+                data: slgMA, 
+                borderColor: accentColor4, 
+                borderWidth: 2,
+                fill: false
+            }
+        ];
+        if (leagueAvgOBP) {
+            obpSlgDatasets.push({
+                label: 'League Avg OBP',
+                data: leagueAvgOBP,
+                borderColor: accentColor3,
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                pointRadius: 0,
+                pointHoverRadius: 3
+            });
+        }
+        if (leagueAvgSLG) {
+            obpSlgDatasets.push({
+                label: 'League Avg SLG',
+                data: leagueAvgSLG,
+                borderColor: accentColor4, // Slightly different gray for SLG
+                borderWidth: 2, 
+                borderDash: [8, 3], // Different dash pattern for SLG
+                fill: false,
+                pointRadius: 0,
+                pointHoverRadius: 3
+            });
+        }
+        obpSlgChartInstance = new Chart(document.getElementById('obp-slg-chart'), {
+            type: 'line',
+            data: {
+                labels: rawData.dates,
+                datasets: obpSlgDatasets
+            },
+            options: commonLineChartOptions('OBP & SLG Over Time', windowSize, numDates)
+        });
+    }
+        
+        function createOrUpdateCountingStatsCharts() {
+            if (!rawData || !rawData.counting_stats || !rawData.dates) {
+                document.getElementById('counting-stats-content').innerHTML = `<div class="alert alert-info">Counting statistics data not available.</div>`;
+                return;
+            }
+            const windowSize = parseInt(movingAverageWindowCountingInput.value) || 10;
+
+            const cs = rawData.counting_stats;
+            const abMA = calculateMovingAverage(cs.AB || [], windowSize);
+            const hMA = calculateMovingAverage(cs.H || [], windowSize);
+            const hrMA = calculateMovingAverage(cs.HR || [], windowSize);
+            const tbMA = calculateMovingAverage(cs.TB || [], windowSize);
+            const rbiMA = calculateMovingAverage(cs.RBI || [], windowSize);
+            const bbMA = calculateMovingAverage(cs.BB || [], windowSize);
+            const kMA = calculateMovingAverage(cs.K || [], windowSize);
+            const hbpMA = calculateMovingAverage(cs.HBP || [], windowSize);
+
+            if (hitsChartInstance) hitsChartInstance.destroy();
+            hitsChartInstance = new Chart(document.getElementById('hits-chart'), {
+                type: 'bar',
+                data: {
+                    labels: rawData.dates,
+                    datasets: [
+                        { label: `At Bats (${windowSize}-game MA)`, data: abMA, backgroundColor: 'rgba(52, 152, 219, 0.7)', borderColor: accentColor1, borderWidth: 1 },
+                        { label: `Hits (${windowSize}-game MA)`, data: hMA, backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: accentColor3, borderWidth: 1 }
+                    ]
+                },
+                options: commonBarChartOptions('Hits & At Bats', windowSize)
+            });
+            
+            if (powerChartInstance) powerChartInstance.destroy();
+            powerChartInstance = new Chart(document.getElementById('power-chart'), {
+                type: 'bar',
+                data: {
+                    labels: rawData.dates,
+                    datasets: [
+                        { label: `Home Runs (${windowSize}-game MA)`, data: hrMA, backgroundColor: 'rgba(230, 126, 34, 0.7)', borderColor: accentColor2, borderWidth: 1 },
+                        { label: `Total Bases (${windowSize}-game MA)`, data: tbMA, backgroundColor: 'rgba(155, 89, 182, 0.7)', borderColor: accentColor5, borderWidth: 1 },
+                        { label: `RBI (${windowSize}-game MA)`, data: rbiMA, backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: accentColor4, borderWidth: 1 }
+                    ]
+                },
+                options: commonBarChartOptions('Power Statistics', windowSize)
+            });
+            
+            const plateDisciplineDatasets = [
+                { label: `Walks (${windowSize}-game MA)`, data: bbMA, backgroundColor: 'rgba(26, 188, 156, 0.7)', borderColor: '#1abc9c', borderWidth: 1 }, // Teal
+                { label: `Strikeouts (${windowSize}-game MA)`, data: kMA, backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: accentColor6, borderWidth: 1 }
+            ];
+            if (hbpMA.some(val => val !== null && val > 0)) { 
+                 plateDisciplineDatasets.push({
+                    label: `Hit By Pitch (${windowSize}-game MA)`, data: hbpMA, backgroundColor: 'rgba(52, 73, 94, 0.7)', borderColor: '#34495e', borderWidth: 1 // Dark grey/blue
+                });
+            }
+            if (plateDisciplineChartInstance) plateDisciplineChartInstance.destroy();
+            plateDisciplineChartInstance = new Chart(document.getElementById('plate-discipline-chart'), {
+                type: 'bar',
+                data: { labels: rawData.dates, datasets: plateDisciplineDatasets },
+                options: commonBarChartOptions('Plate Discipline', windowSize)
+            });
+        }
+        
+        function populateStatsTable(data) {
+            const tableBody = document.getElementById('stats-table-body');
+            tableBody.innerHTML = ''; 
+            
+            if (!data.dates || data.dates.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="14" class="text-center p-4">No statistics available.</td></tr>';
+                return;
+            }
+
+            for (let i = 0; i < data.dates.length; i++) {
+                const row = document.createElement('tr');
+                const addCell = (text, isRateStat = false) => {
+                    const cell = document.createElement('td');
+                    let value = '-';
+                    if (text !== null && text !== undefined) {
+                        if (isRateStat && typeof text === 'number') value = text.toFixed(3);
+                        else value = text;
+                    }
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                };
+
+                addCell(data.dates[i]); 
+
+                const oppImgCell = document.createElement('td');
+                if (data.oppImages && data.oppImages[i]) {
+                    const img = document.createElement('img');
+                    img.src = data.oppImages[i];
+                    img.alt = "Opponent"; 
+                    img.style.width = "24px"; 
+                    img.style.height = "24px";
+                    img.style.objectFit = "contain";
+                    img.style.backgroundColor = "rgba(255,255,255,0.1)"; // Slight background for better visibility if logo is dark
+                    img.style.borderRadius = "3px";
+                    oppImgCell.appendChild(img);
+                } else {
+                    oppImgCell.textContent = '-';
+                }
+                row.appendChild(oppImgCell);
+
+                const cs = data.counting_stats || {};
+                const rs = data.rate_stats || {};
+
+                addCell(cs.PA ? cs.PA[i] : null);
+                addCell(cs.AB ? cs.AB[i] : null);
+                addCell(cs.H ? cs.H[i] : null);
+                addCell(cs.HR ? cs.HR[i] : null);
+                addCell(cs.BB ? cs.BB[i] : null);
+                addCell(cs.K ? cs.K[i] : null);
+                addCell(cs.TB ? cs.TB[i] : null);
+                addCell(cs.RBI ? cs.RBI[i] : null);
+                
+                addCell(rs.AVG ? rs.AVG[i] : null, true);
+                addCell(rs.OBP ? rs.OBP[i] : null, true);
+                addCell(rs.SLG ? rs.SLG[i] : null, true);
+                addCell(rs.OPS ? rs.OPS[i] : null, true);
+                
+                tableBody.appendChild(row);
+            }
+        }
+
+        movingAverageWindowRateInput.addEventListener('change', createOrUpdateRateStatsCharts);
+        movingAverageWindowCountingInput.addEventListener('change', createOrUpdateCountingStatsCharts);
+
+        // Initialize tab handling for chart resizing
+        const mainTabLinks = document.querySelectorAll('#main-tabs button');
+        mainTabLinks.forEach(tabLink => {
+            tabLink.addEventListener('shown.bs.tab', function (event) {
+                if (event.target.id === 'rate-stats-tab') {
+                    if (avgChartInstance) avgChartInstance.resize();
+                    if (opsChartInstance) opsChartInstance.resize();
+                    if (obpSlgChartInstance) obpSlgChartInstance.resize();
+                } else if (event.target.id === 'counting-stats-tab') {
+                    if (hitsChartInstance) hitsChartInstance.resize();
+                    if (powerChartInstance) powerChartInstance.resize();
+                    if (plateDisciplineChartInstance) plateDisciplineChartInstance.resize();
+                }
+            });
+        });
+
+        fetch(`/api/player/${playerId}/game_stats`)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('API Error:', data.error);
+                    const errorMsg = `Error loading data: ${data.error}`;
+                    const alertHtml = `<div class="alert alert-warning p-4 text-center">${errorMsg}</div>`;
+                    document.getElementById('rate-stats-content').innerHTML = alertHtml;
+                    document.getElementById('counting-stats-content').innerHTML = alertHtml;
+                    document.getElementById('stats-table-body').innerHTML = `<tr><td colspan="14" class="text-center p-4">${errorMsg}</td></tr>`;
+                    return;
+                }
+                
+                rawData = data;
+                
+                createOrUpdateRateStatsCharts(); 
+                createOrUpdateCountingStatsCharts();
+                populateStatsTable(data);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                const errorMsg = `Could not load player statistics: ${error.message}.`;
+                const alertHtml = `<div class="alert alert-danger p-4 text-center">${errorMsg}</div>`;
+                document.getElementById('rate-stats-content').innerHTML = alertHtml;
+                document.getElementById('counting-stats-content').innerHTML = alertHtml;
+                document.getElementById('stats-table-body').innerHTML = `<tr><td colspan="14" class="text-center p-4">${errorMsg}</td></tr>`;
+            });
+    });
+// Chart download and copy functions
+function downloadChart(chartId, filename) {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) return;
+    
+    const link = document.createElement('a');
+    link.download = `${filename}-chart.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+
+async function copyChartToClipboard(chartId) {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) return;
+    
+    try {
+        canvas.toBlob(async (blob) => {
+            if (blob) {
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+                
+                // Show success feedback
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+                button.classList.remove('btn-outline-secondary');
+                button.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-outline-secondary');
+                }, 2000);
+            }
+        }, 'image/png');
+    } catch (err) {
+        console.error('Failed to copy chart to clipboard:', err);
+        // Fallback: show error message
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-times me-1"></i>Failed';
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-danger');
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('btn-danger');
+            button.classList.add('btn-outline-secondary');
+        }, 2000);
+    }
+}
+function toggleStats(type) {
+    const perGameSection = document.getElementById('per-game');
+    const seasonTotalsSection = document.getElementById('season-totals');
+
+    const btnPerGame = document.getElementById('btn-per-game');
+    const btnSeasonTotals = document.getElementById('btn-season-totals');
+
+    if (type === 'per-game') {
+        perGameSection.classList.remove('d-none');
+        seasonTotalsSection.classList.add('d-none');
+
+        btnPerGame.classList.add('active');
+        btnSeasonTotals.classList.remove('active');
+    } else {
+        perGameSection.classList.add('d-none');
+        seasonTotalsSection.classList.remove('d-none');
+
+        btnPerGame.classList.remove('active');
+        btnSeasonTotals.classList.add('active');
+    }
+}
+
+</script>
+{% endif %}
+{% endblock %}

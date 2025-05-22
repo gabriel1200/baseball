@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}MLB Player Statistics - Home{% endblock %}
+
+{% block content %}
+
+
+<div class="animated-bg"></div>
+
+<!-- Floating Elements -->
+<div class="floating-element">⚾</div>
+<div class="floating-element">📊</div>
+<div class="floating-element">🏟️</div>
+
+<section class="hero-section">
+    <div class="container">
+        <!-- Move this block up here -->
+        <div class="glass-card mb-4">
+            <div class="player-selection">
+                <h3 class="section-title">🔍 Select a Player</h3>
+                {% if players %}
+                <form id="player-form">
+                    <div class="form-floating">
+                        <select class="form-select" id="player-select" name="player_id">
+                            <option value="">-- Select a player --</option>
+                            {% for player in players %}
+                            <option value="{{ player.playerId }}">{{ player.playerFullName }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="player-select">Choose a player to view their statistics</label>
+                    </div>
+                    <button type="submit" class="cta-button">
+                        <span>View Stats</span>
+                        <span>📈</span>
+                    </button>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    No player data available. Please check that the data file is properly loaded.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Keep this row as is -->
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">MLB Batting Visualizer</h1>
+                    <p class="hero-subtitle">Welcome to the MLB Batting Visualizer. This application allows you to explore and visualize MLB batting performance for the selected players.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- Features Section -->
+<section class="container my-5">
+    <div class="features-grid">
+        <div class="feature-card" style="--delay: 0.6s">
+            <div class="feature-icon">📊</div>
+            <h4 class="feature-title">Rate Statistics</h4>
+            <div class="feature-description">
+                <strong>AVG (Batting Average)</strong>: Hits divided by at-bats<br>
+                <strong>OPS (On-base Plus Slugging)</strong>: Sum of on-base percentage and slugging percentage<br>
+                <strong>OBP (On-base Percentage)</strong>: How frequently a batter reaches base<br>
+                <strong>SLG (Slugging Percentage)</strong>: Total bases divided by at-bats
+            </div>
+        </div>
+        <div class="feature-card" style="--delay: 0.8s">
+            <div class="feature-icon">⚡</div>
+            <h4 class="feature-title">Counting Statistics</h4>
+            <div class="feature-description">
+                <strong>PA</strong>: Plate Appearances | <strong>AB</strong>: At Bats<br>
+                <strong>H</strong>: Hits | <strong>HR</strong>: Home Runs<br>
+                <strong>BB</strong>: Walks | <strong>K</strong>: Strikeouts<br>
+                <strong>HBP</strong>: Hit By Pitch | <strong>SF</strong>: Sacrifice Flies<br>
+                <strong>TB</strong>: Total Bases | <strong>RBI</strong>: Runs Batted In
+            </div>
+        </div>
+        <div class="feature-card" style="--delay: 1s">
+            <div class="feature-icon">🎯</div>
+            <h4 class="feature-title">Interactive Visualizations</h4>
+            <p class="feature-description">Explore comprehensive baseball statistics with interactive charts and graphs that bring player performance data to life.</p>
+        </div>
+    </div>
+
+    <!-- Stats Preview -->
+    <div class="stats-preview">
+        <h3 class="section-title text-center">📈 Key Statistics We Track</h3>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">Batting Average</div>
+                <div class="stat-abbr">AVG</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">On-base Plus Slugging</div>
+                <div class="stat-abbr">OPS</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">On-base Percentage</div>
+                <div class="stat-abbr">OBP</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Slugging Percentage</div>
+                <div class="stat-abbr">SLG</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Home Runs</div>
+                <div class="stat-abbr">HR</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Runs Batted In</div>
+                <div class="stat-abbr">RBI</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Plate Appearances</div>
+                <div class="stat-abbr">PA</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Strikeouts</div>
+                <div class="stat-abbr">K</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const playerForm = document.getElementById('player-form');
+        const playerSelect = document.getElementById('player-select');
+        const ctaButton = document.querySelector('.cta-button');
+        
+        if (playerForm) {
+            playerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const playerId = playerSelect.value;
+                
+                if (playerId) {
+                    // Add loading state
+                    if (ctaButton) {
+                        ctaButton.innerHTML = '<span>Loading...</span><span>⚡</span>';
+                        ctaButton.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    }
+                    
+                    // Navigate to player page
+                    setTimeout(() => {
+                        window.location.href = `/player/${playerId}`;
+                    }, 300);
+                } else {
+                    // Enhanced validation feedback
+                    playerSelect.style.borderColor = 'rgba(245, 87, 108, 0.8)';
+                    playerSelect.style.boxShadow = '0 0 20px rgba(245, 87, 108, 0.3)';
+                    
+                    setTimeout(() => {
+                        playerSelect.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                        playerSelect.style.boxShadow = 'none';
+                    }, 2000);
+                    
+                    alert('Please select a player.');
+                }
+            });
+        }
+
+        // Add interactive hover effects
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelectorAll('.floating-element');
+            
+            parallax.forEach((element, index) => {
+                const speed = 0.5 + (index * 0.1);
+                element.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
+            });
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('[style*="animation"]').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    });
+
+    // Add particle effect on click
+    document.addEventListener('click', function(e) {
+        createParticle(e.clientX, e.clientY);
+    });
+
+    function createParticle(x, y) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+            position: fixed;
+            top: ${y}px;
+            left: ${x}px;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            animation: particleExplode 0.6s ease-out forwards;
+        `;
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+            particle.remove();
+        }, 600);
+    }
+
+    // Add CSS for particle animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes particleExplode {
+            0% {
+                opacity: 1;
+                transform: scale(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1) rotate(180deg) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}

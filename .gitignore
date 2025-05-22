@@ -1,0 +1,85 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Flask specific
+instance/
+*.db
+*.sqlite3
+
+# Configuration files
+.env
+.env.*
+config.py
+settings.py
+
+# Pytest and coverage
+.cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Pipenv
+Pipfile.lock
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Static asset cache (if any)
+*.map
+
+# Node modules (if you're bundling front-end)
+node_modules/
+
+# AWS Elastic Beanstalk
+.elasticbeanstalk/
+
+# Gunicorn log files
+gunicorn.log
+
+# Flask-Migrate
+migrations/
+
+# SQLite history file
+.history
+
+# Local test databases or data
+test.db
+*.bak

@@ -1,0 +1,1389 @@
+/* ====================================
+   MLB Stats Visualizer - Modern CSS
+   Clean, Organized, and Responsive
+   ==================================== */
+
+/* ====================================
+   CSS Custom Properties (Variables)
+   ==================================== */
+:root {
+    /* Dark Theme Colors */
+    --primary-bg: #0f172a;
+    --secondary-bg: #1e293b;
+    --card-bg: #334155;
+    --accent-bg: #475569;
+    --border-color: #64748b;
+    
+    /* Text Colors */
+    --text-primary: #f8fafc;
+    --text-secondary: #e2e8f0;
+    --text-muted: #94a3b8;
+    
+    /* Brand Colors */
+    --brand-primary: #3b82f6;
+    --brand-secondary: #8b5cf6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    
+    /* Interactive Elements */
+    --hover-bg: rgba(255, 255, 255, 0.1);
+    --active-bg: rgba(59, 130, 246, 0.2);
+    
+    /* Effects */
+    --border-radius: 0.75rem;
+    --border-radius-lg: 1rem;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); /* Assuming this was intended for the second stat-item transition */
+
+    /* Accent Colors from later definitions (assuming these are needed) */
+    --accent-blue: #007bff; /* Example, define as needed */
+    --accent-blue-dark: #0056b3; /* Example, define as needed */
+    --accent-green: #28a745; /* Example, define as needed */
+    --accent-green-dark: #20c997; /* Example, define as needed */
+    --accent-orange: #ffc107; /* Example, define as needed */
+    --accent-orange-dark: #fd7e14; /* Example, define as needed */
+    --accent-red: #dc3545; /* Example, define as needed */
+    --text-light: #f8f9fa; /* Example, define as needed */
+    --card-header-bg: #1e293b; /* Example, define as needed */
+}
+
+/* Light Theme Override */
+[data-theme="light"] {
+    --primary-bg: #ffffff;
+    --secondary-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --accent-bg: #f1f5f9;
+    --border-color: #e2e8f0;
+    
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    
+    --hover-bg: rgba(0, 0, 0, 0.05);
+    --active-bg: rgba(59, 130, 246, 0.1);
+
+    /* Update light theme accent colors if they differ */
+    /* --accent-blue: #some-light-blue; */
+}
+
+/* ====================================
+   Base Styles
+   ==================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    transition: var(--transition);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-primary);
+}
+
+/* ====================================
+   Enhanced Navigation
+   ==================================== */
+.modern-navbar {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 0;
+    transition: var(--transition);
+}
+
+[data-theme="light"] .modern-navbar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    transition: var(--transition);
+}
+
+.brand-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.brand-text {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    padding: 0.75rem 1rem !important;
+    border-radius: var(--border-radius);
+    margin: 0 0.25rem;
+    transition: var(--transition);
+    position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: var(--hover-bg);
+    color: var(--brand-primary) !important;
+}
+
+.navbar-nav .nav-link.active {
+    background-color: var(--active-bg);
+    color: var(--brand-primary) !important;
+}
+
+.dropdown-menu {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(20px);
+}
+
+.dropdown-item {
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--brand-primary);
+}
+
+.theme-toggle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--brand-primary);
+}
+
+/* ====================================
+   Main Content
+   ==================================== */
+.main-content {
+    padding-top: 100px; /* Account for fixed navbar */
+    min-height: calc(100vh - 200px);
+}
+
+/* ====================================
+   Cards and Components
+   ==================================== */
+.card {
+    background-color: var(--card-bg); /* This is the base card background */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background-color: var(--accent-bg);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 1.25rem 1.5rem;
+}
+
+/* Consolidated .card-body */
+.card-body {
+    padding: 1.5rem;
+    color: var(--text-secondary);
+    background-color: #2F3640; /* This was a later, specific override for .card-body */
+}
+
+/* Main Feature Card */
+.main-card {
+    background: linear-gradient(135deg, var(--card-bg), var(--accent-bg));
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+}
+
+.main-card .card-header {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    color: white;
+    border: none;
+}
+
+/* Chart Container */
+.chart-container {
+    background-color: var(--secondary-bg);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    position: relative;
+    height: 400px;
+}
+
+/* ====================================
+   Player Information Section
+   ==================================== */
+.player-image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.player-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: var(--border-radius-lg);
+    border: 3px solid var(--brand-primary);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition);
+}
+
+.player-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+}
+
+.player-placeholder {
+    width: 150px;
+    height: 150px;
+    background: var(--accent-bg);
+    border: 3px solid var(--brand-primary);
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 3rem;
+}
+
+.team-logos {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.team-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius);
+    object-fit: contain;
+    background: var(--accent-bg);
+    padding: 4px;
+    border: 1px solid var(--border-color);
+}
+
+/* Player Info Table */
+.player-info-table {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.player-info-table th,
+.player-info-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.player-info-table th {
+    background-color: var(--accent-bg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ====================================
+   Statistics Cards
+   ==================================== */
+/* Consolidated .stats-grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* From second definition */
+    gap: 1.5rem; /* Consistent in both */
+    margin-top: 2rem; /* From first definition */
+}
+
+/* Consolidated .stat-card */
+.stat-card {
+    background: linear-gradient(145deg, #f9fafb, #f3f4f6); /* From third definition */
+    transition: all 0.3s ease; /* From third definition */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* From third definition */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03); /* From third definition */
+    border-radius: 1rem; /* var(--border-radius-lg) was 1rem, matches third definition */
+    overflow: hidden; /* From first definition */
+}
+
+/* Consolidated .stat-card:hover */
+.stat-card:hover {
+    transform: translateY(-3px); /* From third definition */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* From third definition */
+    border-color: rgba(66, 153, 225, 0.3); /* From second definition */
+}
+
+/* Consolidated .stat-card-header */
+.stat-card-header {
+    padding: 0.875rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.025em;
+    color: var(--text-primary); /* All from second definition */
+}
+
+/* Consolidated .stat-card-header.rate-stats */
+.stat-card-header.rate-stats {
+    background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%); /* From second definition */
+}
+
+/* Consolidated .stat-card-header.per-game */
+.stat-card-header.per-game {
+    background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-green-dark) 100%); /* From second definition */
+}
+
+.stat-card-body { /* This class was introduced later */
+    padding: 1.25rem;
+}
+
+/* Consolidated .stats-container */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1.5rem; /* From first definition, second was subset */
+}
+
+/* Consolidated .per-game-container */
+.per-game-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* From both */
+    gap: 0.875rem; /* From second definition */
+    padding: 1.5rem; /* From first definition */
+}
+
+/* Consolidated .stat-item */
+.stat-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+    transition: var(--transition-fast); /* Make sure --transition-fast is defined */
+    min-height: 85px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* All from second definition */
+}
+
+/* Consolidated .stat-item:hover */
+.stat-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(66, 153, 225, 0.3);
+    transform: translateY(-1px); /* All from second definition */
+}
+
+/* Consolidated .stat-label */
+.stat-label {
+    font-size: 0.75rem; /* From second definition */
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem; /* From second definition */
+}
+
+/* Consolidated .stat-value */
+.stat-value {
+    font-size: 1.25rem; /* From second definition */
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem; /* From second definition */
+    line-height: 1.2; /* From second definition */
+}
+
+.per-game-item .stat-value { /* This was a new rule */
+    font-size: 1.1rem;
+}
+
+.stat-rank { /* This was a new rule */
+    margin-top: 0.25rem;
+}
+
+/* Rank Badges */
+/* Consolidated .rank-badge */
+.rank-badge {
+    font-size: 0.7rem; /* From second definition */
+    font-weight: 600;
+    padding: 0.2rem 0.5rem; /* From second definition */
+    border-radius: 12px; /* From second definition (1rem ~ 16px, 12px is different) */
+    color: var(--text-primary); /* From second definition */
+}
+
+/* Consolidated .rank-badge.top-10 (and similar) - using second definitions */
+.rank-badge.top-10 {
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-green-dark));
+}
+
+.rank-badge.top-50 {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-blue-dark));
+}
+
+.rank-badge.top-100 {
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-orange-dark));
+}
+
+.rank-badge.other {
+    background: rgba(113, 128, 150, 0.8);
+}
+
+/* Season Totals */
+.totals-card {
+    background: linear-gradient(135deg, rgba(26, 32, 44, 0.9) 0%, rgba(45, 55, 72, 0.8) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg); /* var(--border-radius-large) used here, ensure it's defined or use var(--border-radius-lg) */
+    overflow: hidden;
+    margin-top: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.totals-header {
+    background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-orange-dark) 100%);
+    color: var(--text-primary);
+    padding: 0.875rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.totals-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+/* ====================================
+   Tables
+   ==================================== */
+.table-responsive {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+/* Consolidated .table */
+.table {
+    background-color: var(--accent-bg); /* From second definition */
+    color: var(--text-light); /* From second definition, ensure --text-light is defined */
+    border-radius: var(--border-radius); /* From first definition */
+    overflow: hidden; /* From first definition */
+}
+
+/* Original .table th from first set */
+.table th {
+    background-color: var(--accent-bg); /* This will be overridden by .table thead th for th in thead */
+    color: var(--text-primary);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* More specific rule for thead th from second set */
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--card-header-bg); /* Ensure --card-header-bg is defined */
+    color: var(--text-primary);
+    border-color: var(--border-color); /* This applies to all sides if not specified, potentially conflicting with border-bottom of general .table th */
+    z-index: 10;
+}
+
+/* Original .table td */
+.table td {
+    border-bottom: 1px solid var(--border-color);
+    /* color will be inherited from .table -> var(--text-light) */
+}
+
+/* Styles from second table definition */
+.table tbody tr,
+.table tbody td { /* td color definition here is more specific if var(--text-light) differs from var(--text-secondary) */
+    color: var(--text-light);
+    border-color: var(--border-color); /* Explicitly sets border color for td and tr */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--card-bg); /* Ensure this var(--card-bg) is the one intended for striped tables */
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--hover-bg); /* Original */
+    /* background-color: rgba(255, 255, 255, 0.05); /* From second definition */
+    color: var(--text-primary); /* From second definition */
+} /* Choose one hover background or merge if lighting condition dependent */
+
+/* ====================================
+   Tabs
+   ==================================== */
+.nav-tabs {
+    border-bottom: 1px solid var(--accent-bg);
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-primary);
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-top-left-radius: 0.35rem;
+    border-top-right-radius: 0.35rem;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: var(--accent-bg) var(--accent-bg) var(--accent-bg);
+    background-color: var(--accent-bg);
+    color: var(--text-primary);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--text-primary);
+    background-color: #007bff; /* Hardcoded blue */
+    border-color: #007bff #007bff var(--card-bg); /* Hardcoded blue, ensure var(--card-bg) is correct contextually */
+    font-weight: 600;
+}
+
+.tab-content {
+    background-color: var(--card-bg); /* Ensure this is the correct background */
+    border: 1px solid var(--accent-bg);
+    border-top: none;
+    padding: 1.5rem;
+    border-bottom-left-radius: 0.35rem;
+    border-bottom-right-radius: 0.35rem;
+}
+
+/* ====================================
+   Forms and Buttons
+   ==================================== */
+/* Consolidated .form-label */
+.form-label {
+    color: var(--text-muted); /* From second definition */
+    font-weight: 500; /* From first definition */
+}
+
+/* Consolidated .form-control, .form-select */
+.form-control,
+.form-select {
+    background-color: var(--accent-bg); /* From second definition */
+    border: 1px solid var(--border-color); /* Consistent */
+    border-radius: var(--border-radius); /* From first definition */
+    color: var(--text-primary); /* Consistent */
+    transition: var(--transition); /* From first definition */
+}
+
+/* Consolidated .form-control:focus, .form-select:focus */
+.form-control:focus,
+.form-select:focus {
+    border-color: #007bff; /* From second definition, hardcoded blue */
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.35); /* From second definition */
+    background-color: var(--accent-bg); /* From second definition */
+    color: var(--text-light); /* From second definition, ensure --text-light defined */
+}
+
+/* Consolidated .btn-primary */
+.btn-primary {
+    background-color: #007bff; /* From second definition, hardcoded blue, overrides gradient */
+    border: none; /* From first definition */
+    /* border-color: #007bff; from second - no effect due to border:none */
+    color: var(--text-primary); /* From second definition */
+    border-radius: var(--border-radius); /* From first definition */
+    font-weight: 500; /* From first definition */
+    transition: var(--transition); /* From first definition */
+}
+
+/* Consolidated .btn-primary:hover */
+.btn-primary:hover {
+    transform: translateY(-1px); /* From first definition */
+    box-shadow: var(--shadow-md); /* From first definition */
+    background-color: #0056b3; /* From second definition, hardcoded blue */
+    border-color: #0056b3; /* From second definition, hardcoded blue */
+}
+
+/* Consolidated .btn-secondary */
+.btn-secondary {
+    background-color: var(--border-color); /* From second definition */
+    border: 1px solid var(--border-color); /* From first definition, border-color from 2nd is compatible */
+    color: var(--text-primary); /* Consistent */
+    border-radius: var(--border-radius); /* From first definition */
+}
+
+/* .btn-secondary:hover from second set */
+.btn-secondary:hover {
+    background-color: #3b4656; /* Hardcoded color */
+    border-color: #3b4656; /* Hardcoded color */
+}
+
+.btn-outline-light { /* From first set */
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.btn-outline-light:hover { /* From first set */
+    background-color: var(--hover-bg);
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+}
+
+.btn-toggle-active { /* From second set */
+    background-color: #4CAF50; /* Hardcoded green */
+    color: var(--text-primary);
+    border-color: #4CAF50; /* Hardcoded green */
+}
+
+/* ====================================
+   Enhanced Footer
+   ==================================== */
+.modern-footer {
+    background-color: var(--secondary-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 3rem 0 2rem;
+    margin-top: 4rem;
+}
+
+.footer-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.footer-links a:hover {
+    color: var(--brand-primary);
+}
+
+/* Specific footer style from second set */
+footer.bg-light { /* This targets a footer with class .bg-light */
+    background-color: var(--secondary-bg) !important;
+    color: var(--text-muted);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-top: 3rem !important;
+}
+
+footer p { /* Associated with footer.bg-light */
+    margin-bottom: 0;
+}
+
+
+/* ====================================
+   Alerts
+   ==================================== */
+/* Consolidated .alert */
+.alert {
+    border-radius: var(--border-radius); /* From first definition */
+    border-style: solid; /* From first's shorthand 'border: 1px solid' */
+    border-width: 2px; /* From second definition, overrides 1px from first */
+    /* border-color will be set by specific alert types or inherited */
+    color: var(--text-secondary); /* Text color from second definition */
+}
+
+/* Consolidated .alert-warning (using second definition) */
+.alert-warning {
+    background-color: #4d3a00; /* Hardcoded color */
+    border-color: #ffc107; /* Hardcoded color */
+    color: #ffebcc; /* Hardcoded color */
+}
+
+/* Consolidated .alert-danger (using second definition) */
+.alert-danger {
+    background-color: #5c1f22; /* Hardcoded color */
+    border-color: #dc3545; /* Hardcoded color */
+    color: #f8d7da; /* Hardcoded color */
+}
+
+/* Consolidated .alert-info (using second definition) */
+.alert-info {
+    background-color: #113c54; /* Hardcoded color */
+    border-color: var(--accent-blue); /* Ensure --accent-blue is defined */
+    color: #cce5ff; /* Hardcoded color */
+}
+
+/* ====================================
+   Utilities
+   ==================================== */
+/* Consolidated .loading and @keyframes pulse */
+.loading {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+.text-gradient { /* From first set */
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Utility classes from second set */
+.high-stat {
+    color: var(--accent-green); /* Ensure --accent-green defined */
+    font-weight: bold;
+}
+
+.low-stat {
+    color: var(--accent-red); /* Ensure --accent-red defined */
+}
+
+/* ====================================
+   Gradients & Pills (from later in file)
+   ==================================== */
+.bg-gradient {
+    position: relative;
+}
+
+.bg-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+}
+
+.info-pill {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-highlight {
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-highlight:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-bg-pattern { /* Related to the third .stat-card definition */
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, rgba(0, 123, 255, 0.05), rgba(40, 167, 69, 0.05));
+    border-radius: 0 12px 0 40px;
+}
+
+/* Tiered Rank Badges (Specific number badges) */
+/* These styles are very specific and seem intended to override general .rank-badge backgrounds/colors */
+/* Tier 1: Ranks 1–10 – Top Elite */
+.rank-badge-1, .rank-badge-2, .rank-badge-3, .rank-badge-4, .rank-badge-5,
+.rank-badge-6, .rank-badge-7, .rank-badge-8, .rank-badge-9, .rank-badge-10 {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+}
+
+/* Tier 2: Ranks 11–50 – High Performing */
+.rank-badge-11, .rank-badge-12, .rank-badge-13, .rank-badge-14, .rank-badge-15,
+.rank-badge-16, .rank-badge-17, .rank-badge-18, .rank-badge-19, .rank-badge-20,
+.rank-badge-21, .rank-badge-22, .rank-badge-23, .rank-badge-24, .rank-badge-25,
+.rank-badge-26, .rank-badge-27, .rank-badge-28, .rank-badge-29, .rank-badge-30,
+.rank-badge-31, .rank-badge-32, .rank-badge-33, .rank-badge-34, .rank-badge-35,
+.rank-badge-36, .rank-badge-37, .rank-badge-38, .rank-badge-39, .rank-badge-40,
+.rank-badge-41, .rank-badge-42, .rank-badge-43, .rank-badge-44, .rank-badge-45,
+.rank-badge-46, .rank-badge-47, .rank-badge-48, .rank-badge-49, .rank-badge-50 {
+    background: linear-gradient(45deg, #007bff, #6610f2) !important;
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* Tier 3: Ranks 51–100 – Mid Tier */
+.rank-badge-51, .rank-badge-52, .rank-badge-53, .rank-badge-54, .rank-badge-55,
+.rank-badge-56, .rank-badge-57, .rank-badge-58, .rank-badge-59, .rank-badge-60,
+.rank-badge-61, .rank-badge-62, .rank-badge-63, .rank-badge-64, .rank-badge-65,
+.rank-badge-66, .rank-badge-67, .rank-badge-68, .rank-badge-69, .rank-badge-70,
+.rank-badge-71, .rank-badge-72, .rank-badge-73, .rank-badge-74, .rank-badge-75,
+.rank-badge-76, .rank-badge-77, .rank-badge-78, .rank-badge-79, .rank-badge-80,
+.rank-badge-81, .rank-badge-82, .rank-badge-83, .rank-badge-84, .rank-badge-85,
+.rank-badge-86, .rank-badge-87, .rank-badge-88, .rank-badge-89, .rank-badge-90,
+.rank-badge-91, .rank-badge-92, .rank-badge-93, .rank-badge-94, .rank-badge-95,
+.rank-badge-96, .rank-badge-97, .rank-badge-98, .rank-badge-99, .rank-badge-100 {
+    background: linear-gradient(45deg, #ffc107, #fd7e14) !important;
+    color: #212529 !important;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(255, 193, 7, 0.3);
+}
+
+/* Tier 4: Ranks 101–150 – Low Mid */
+.rank-badge-101, .rank-badge-102, .rank-badge-103, .rank-badge-104, .rank-badge-105,
+.rank-badge-106, .rank-badge-107, .rank-badge-108, .rank-badge-109, .rank-badge-110,
+.rank-badge-111, .rank-badge-112, .rank-badge-113, .rank-badge-114, .rank-badge-115,
+.rank-badge-116, .rank-badge-117, .rank-badge-118, .rank-badge-119, .rank-badge-120,
+.rank-badge-121, .rank-badge-122, .rank-badge-123, .rank-badge-124, .rank-badge-125,
+.rank-badge-126, .rank-badge-127, .rank-badge-128, .rank-badge-129, .rank-badge-130,
+.rank-badge-131, .rank-badge-132, .rank-badge-133, .rank-badge-134, .rank-badge-135,
+.rank-badge-136, .rank-badge-137, .rank-badge-138, .rank-badge-139, .rank-badge-140,
+.rank-badge-141, .rank-badge-142, .rank-badge-143, .rank-badge-144, .rank-badge-145,
+.rank-badge-146, .rank-badge-147, .rank-badge-148, .rank-badge-149, .rank-badge-150 {
+    background: linear-gradient(45deg, #fd7e14, #dc3545) !important;
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+}
+
+/* Tier 5: Ranks 151–179 – Bottom Tier */
+.rank-badge-151, .rank-badge-152, .rank-badge-153, .rank-badge-154, .rank-badge-155,
+.rank-badge-156, .rank-badge-157, .rank-badge-158, .rank-badge-159, .rank-badge-160,
+.rank-badge-161, .rank-badge-162, .rank-badge-163, .rank-badge-164, .rank-badge-165,
+.rank-badge-166, .rank-badge-167, .rank-badge-168, .rank-badge-169, .rank-badge-170,
+.rank-badge-171, .rank-badge-172, .rank-badge-173, .rank-badge-174, .rank-badge-175,
+.rank-badge-176, .rank-badge-177, .rank-badge-178, .rank-badge-179 {
+    background: linear-gradient(45deg, #6c757d, #343a40) !important;
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(108, 117, 125, 0.3);
+}
+
+/* Nav Pills and Chart Wrapper from end of file */
+.nav-pills .nav-link {
+    background-color: #f8f9fa; /* Light mode color */
+    color: #15191d; /* Light mode color */
+    border: 1px solid #dee2e6; /* Light mode color */
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #e9ecef; /* Light mode color */
+    transform: translateY(-1px);
+}
+
+.nav-pills .nav-link.active {
+    background: linear-gradient(45deg, #007bff, #0056b3); /* Hardcoded blue */
+    border-color: #0056b3; /* Hardcoded blue */
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.chart-wrapper {
+    border: 1px solid #e9ecef; /* Light mode color */
+    transition: box-shadow 0.3s ease;
+}
+
+.chart-wrapper:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modern-table tbody tr { /* Assuming .modern-table is a specific table class */
+    border-bottom: 1px solid #f8f9fa; /* Light mode color */
+    transition: background-color 0.2s ease;
+}
+
+/* ====================================
+   Responsive Design
+   ==================================== */
+@media (max-width: 992px) {
+    .main-content {
+        padding-top: 80px;
+    }
+    
+    .stats-grid { /* Overrides base .stats-grid */
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-container { /* Overrides base .stats-container */
+        grid-template-columns: 1fr;
+    }
+    
+    .per-game-container { /* Overrides base .per-game-container */
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-collapse {
+        background-color: var(--card-bg);
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+    }
+    
+    .chart-container { /* Original responsive rule */
+        height: 300px;
+        padding: 1rem;
+    }
+
+    /* Consolidated responsive rules from second block for 768px */
+    .stats-grid {
+        /* grid-template-columns: 1fr; /* Already set at 992px */
+        gap: 1rem; 
+    }
+    
+    .stats-container {
+        /* grid-template-columns: 1fr; /* Already set at 992px */
+        gap: 0.75rem;
+    }
+    
+    .per-game-container { /* This will override the 992px setting and the earlier 768px definition if it existed */
+        grid-template-columns: repeat(2, 1fr); /* This was the final value after conflicting 768px rules */
+        gap: 0.75rem;
+    }
+    
+    .totals-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .player-image,
+    .player-placeholder {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .main-card .card-body { /* Make sure this doesn't conflict with global .card-body background */
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-content {
+        padding-top: 70px;
+    }
+    
+    .card-body { /* General .card-body padding adjustment */
+        padding: 1rem;
+    }
+
+    .player-image-section {
+        padding: 1rem;
+    }
+
+    /* .per-game-container from second responsive block */
+    .per-game-container {
+        grid-template-columns: 1fr; /* Overrides 768px definition */
+    }
+    
+    .player-info-table th,
+    .player-info-table td {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+}
+
+
+    /* Animated Background */
+    .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: radial-gradient(circle at 20% 50%, rgba(103, 126, 234, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 80%, rgba(79, 172, 254, 0.1) 0%, transparent 50%);
+    }
+
+    .animated-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="2" height="2" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.5" fill="white" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-10px) rotate(1deg); }
+        66% { transform: translateY(5px) rotate(-1deg); }
+    }
+
+    /* Hero Section */
+    .hero-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .hero-content {
+        z-index: 2;
+        position: relative;
+    }
+
+    .hero-title {
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 900;
+        line-height: 0.9;
+        margin-bottom: 2rem;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: slideInUp 1s ease-out;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        margin-bottom: 3rem;
+        animation: slideInUp 1s ease-out 0.2s both;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Glass Card */
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        animation: slideInUp 1s ease-out 0.4s both;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 80px rgba(103, 126, 234, 0.2);
+        border-color: var(--border-glow);
+    }
+
+    /* Player Selection */
+    .player-selection {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .form-floating {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .form-select {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+        padding: 1.5rem 1rem 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-select option {
+        background: #1a1a2e;
+        color: var(--text-primary);
+    }
+
+    .form-select:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(103, 126, 234, 0.8);
+        box-shadow: 0 0 30px rgba(103, 126, 234, 0.3);
+        color: var(--text-primary);
+        outline: none;
+    }
+
+    .form-floating label {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    /* CTA Button */
+    .cta-button {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 50px;
+        padding: 1rem 3rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(103, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(103, 126, 234, 0.6);
+        color: white;
+    }
+
+    .cta-button:hover::before {
+        left: 100%;
+    }
+
+    /* Features Grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 4rem;
+    }
+
+    .feature-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        animation: fadeInUp 1s ease-out var(--delay, 0s) both;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(103, 126, 234, 0.3);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--secondary-gradient);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+
+    .feature-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .feature-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Stats Preview */
+    .stats-preview {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 3rem;
+        animation: slideInUp 1s ease-out 0.8s both;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-abbr {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    /* Floating Elements */
+    .floating-element {
+        position: absolute;
+        animation: floatAnimation 6s ease-in-out infinite;
+        opacity: 0.1;
+        font-size: 2rem;
+    }
+
+    .floating-element:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+    .floating-element:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; }
+    .floating-element:nth-child(3) { bottom: 30%; left: 5%; animation-delay: 4s; }
+
+    @keyframes floatAnimation {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    /* Alert styling */
+    .alert-warning {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #fbbf24;
+        border-radius: 16px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 3rem;
+        }
+        
+        .glass-card {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .features-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary-gradient);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary-gradient);
+    }
