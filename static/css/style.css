@@ -233,7 +233,8 @@ body {
 .card-body {
     padding: 1.5rem;
     color: var(--text-secondary);
-    background-color: #2F3640; /* This was a later, specific override for .card-body */
+    background-color: #2A3441; /* This was a later, specific override for .card-body */
+    border: 1px solid var(--border-color);
 }
 
 /* Main Feature Card */
