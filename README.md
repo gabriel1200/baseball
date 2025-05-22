@@ -4,6 +4,25 @@ Hope you enjoy!
 
 ---
 
+## 🚀 Data
+
+The application depends on three csv, whose origins & purposes are described below.
+
+mlb_full.csv 
+
+This has the full game logs of every player. I generated this via scraping the TrueMedia API for each playerID, doing a simple calculation of the rate stats using pandas, and combining all of these logs into one row. This data is used to populate all of the time series graphics and the game logs.
+
+(For a proper production involving decades of data, I suspect the most efficient route would be to save each game log as it's own table indexed by playerid. However, given the dataset being relatively small, making one file and loading it in at the onset felt the most sensible approach. )
+
+mlb_player_averages.csv  
+
+This was dervived from mlb_full.csv. It includeds the per game and season total versions of all the counting stats, which is displayed, alongside the ranks in each category, in the player card at the top.
+
+mlb_rate_stat_averages.csv
+
+This was derived from mlb_player_averages.csv. It's a very simply csv with the average  AVG, OBP, SLG an OPS calculations for all the players in the database. This is used in the time series graphics to create the league average line, with the goal being to provide some immediate context regarding how well/poorly a player is doing relative to their peers.
+---
+
 ## 🚀 Getting Started
 
 Follow these steps to run the app locally:
