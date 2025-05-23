@@ -783,11 +783,7 @@
                 { label: `Walks (${windowSize}-game MA)`, data: bbMA, backgroundColor: 'rgba(26, 188, 156, 0.7)', borderColor: '#1abc9c', borderWidth: 1 }, // Teal
                 { label: `Strikeouts (${windowSize}-game MA)`, data: kMA, backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: accentColor6, borderWidth: 1 }
             ];
-            if (hbpMA.some(val => val !== null && val > 0)) { 
-                 plateDisciplineDatasets.push({
-                    label: `Hit By Pitch (${windowSize}-game MA)`, data: hbpMA, backgroundColor: 'rgba(52, 73, 94, 0.7)', borderColor: '#34495e', borderWidth: 1 // Dark grey/blue
-                });
-            }
+
             if (plateDisciplineChartInstance) plateDisciplineChartInstance.destroy();
             plateDisciplineChartInstance = new Chart(document.getElementById('plate-discipline-chart'), {
                 type: 'bar',
